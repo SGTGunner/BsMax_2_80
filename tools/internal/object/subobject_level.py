@@ -12,188 +12,279 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2025/06/05
 
 import bpy
 
 from bpy.props import IntProperty
+from bpy.types import Operator
+from bpy.utils import register_class, unregister_class
 
 
+def set_mode(mode):
+	bpy.ops.object.mode_set(mode=mode)
 
-class Object_OT_Subobject_Level(bpy.types.Operator):
+
+def set_mesh_sub_mode(ctx, vertex, edge, face):
+	ctx.tool_settings.mesh_select_mode = vertex, edge, face
+
+
+def is_primitive(obj):
+	if obj.type in {'MESH', 'CURVE'}:
+		if 'classname' in obj.data.primitivedata:
+			return obj.data.primitivedata['classname']
+	return False
+
+
+def set_mesh_mode(ctx, mode, level):
+	v, e, f = ctx.tool_settings.mesh_select_mode
+
+	if level == 1: # Vertex mode
+		if mode == "EDIT_MESH" and v:
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+			set_mesh_sub_mode(ctx, True, False, False)
+
+	elif level == 2: # Edge mode
+		if mode == "EDIT_MESH" and e:
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+			set_mesh_sub_mode(ctx, False, True, False)
+
+	#elif self.level == 3: # Reserved for Border mode
+	#	# this is reserved for border mode for now just act as edge mode
+	#	if mode == "EDIT_MESH" and e:
+	#		set_mode('OBJECT')
+	#	else:
+	#		set_mode('EDIT')
+	#		self.mesh(ctx,False,True,False)
+
+	elif level in {3, 4}: # Mesh mode
+		if mode == "EDIT_MESH" and f:
+			set_mode('OBJECT')
+		else:
+			set_mode('EDIT')
+			set_mesh_sub_mode(ctx, False, False, True)
+	#elif self.level == 5: # Reserved for Element mode
+	#	# this is reserved for Element mode for now act as Face mode
+	#	if mode == "EDIT_MESH" and f:
+	#		set_mode('OBJECT')
+	#	else:
+	#		set_mode('EDIT')
+	#	self.mesh(ctx,False,False,True)
+
+	elif level == 6:
+		set_mode('OBJECT')
+
+	# this do not have similar in 3D Max
+	elif level == 7:
+		if mode == "SCULPT": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('SCULPT')
+
+	elif level == 8:
+		if mode == "PAINT_VERTEX":
+			set_mode('OBJECT')
+		else:
+			set_mode('VERTEX_PAINT')
+
+	elif level == 9:
+		if mode == "PAINT_WEIGHT":
+			set_mode('OBJECT')
+		else: 
+			set_mode('WEIGHT_PAINT')
+
+	elif level == 0:
+		if mode == "PAINT_TEXTURE": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('TEXTURE_PAINT')
+
+
+def set_surface_mode(mode, level):
+	if level == 1:
+		if mode == "EDIT_SURFACE": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+
+	elif level == 0 or level >= 2:
+		set_mode('OBJECT')
+
+
+def set_curve_mode(mode, level):
+	if level == 1:
+		if mode == "EDIT_CURVE": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+
+	elif level == 0 or level >= 2: 
+		set_mode('OBJECT')
+
+
+def set_curves_mode(mode, level):
+	if level == 1:
+		if mode == "EDIT_CURVES": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+
+	if level == 2:
+		if mode == "SCULPT_CURVES": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('SCULPT')
+
+	elif level == 0 or level >= 2: 
+		set_mode('OBJECT')
+
+
+def set_meta_mode(mode, level):
+	if level == 1:
+		if mode == "EDIT_METABALL": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+
+	elif level == 0 or level >= 2: 
+		set_mode('OBJECT')
+
+
+def set_lattice_mode(mode, level):
+	if level == 1:
+		if mode == "EDIT_LATTICE": 
+			set_mode('OBJECT')
+		else: 
+			set_mode('EDIT')
+	elif level == 0 or level >= 2: 
+		set_mode('OBJECT')
+
+
+def set_armature_mode(mode, level):
+	if level == 1:
+		if mode == "EDIT_ARMATURE":
+			set_mode('OBJECT')
+		else:
+			# this for proxy and librery overide the cant be set in edit mode #
+			# TODO find a way to check is linked or not rather then use try #
+			try:
+				set_mode('EDIT')
+			except:
+				pass
+
+	elif level == 2:
+		if mode == "POSE":
+			set_mode('OBJECT')
+		else:
+			set_mode('POSE')
+
+	elif level == 0 or level >= 3:
+		set_mode('OBJECT')
+
+
+def set_point_cloude_mode(mode, level):
+	print(level, mode)
+	if level == 1:
+		if mode == 'EDIT_POINTCLOUD':
+			set_mode('OBJECT')
+		else:
+			set_mode('EDIT')
+	
+	elif level == 0 or level >= 2:
+		set_mode('OBJECT')
+
+
+def set_gpencil_mode(mode, level):
+	if level == 1:
+		if mode == 'GPENCIL_EDIT':
+			set_mode('OBJECT')
+		else:
+			set_mode('GPENCIL_EDIT')
+
+	elif level == 2:
+		if mode == 'GPENCIL_SCULPT':
+			set_mode('OBJECT')
+		else:
+			set_mode('GPENCIL_SCULPT')
+
+	elif level == 3:
+		if mode == 'GPENCIL_PAINT':
+			set_mode('OBJECT')
+		else:
+			set_mode('GPENCIL_PAINT')
+
+	elif level == 4:
+		if mode == 'GPENCIL_WEIGHT':
+			set_mode('OBJECT')
+		else:
+			set_mode('GPENCIL_WEIGHT')
+
+	elif level == 0 or level >= 5:
+		set_mode('OBJECT')
+
+
+class Object_OT_Subobject_Level(Operator):
 	bl_idname = "object.subobject_level"
 	bl_label = "Subobject Level"
-	level: IntProperty(name="SubobjectLevel")
+	bl_options = {'REGISTER', 'INTERNAL'}
+
+	level: IntProperty(name="SubobjectLevel") # type: ignore
 
 	@classmethod
-	def poll(self, ctx):
-		return ctx.active_object != None
-	
-	def set(self, mode):
-		bpy.ops.object.mode_set(mode=mode)
-	
-	def mesh(self, ctx,v,e,f):
-		ctx.tool_settings.mesh_select_mode = v,e,f
+	def poll(_, ctx):
+		return ctx.object
 
-	def execute(self, ctx):  
-		active_object = ctx.active_object
-		is_primitive = active_object.data.primitivedata.classname if active_object.type in {'MESH','CURVE'} else False
+	def execute(self, ctx):
+		obj = ctx.object
 		mode = ctx.mode
+		level = self.level
+		obj_type = obj.type
+
+		if is_primitive(obj):
+			set_mode('OBJECT')
+			return{'FINISHED'}
+
+		if obj_type == 'MESH':
+			set_mesh_mode(ctx, mode, level)
+
+		elif obj_type == 'SURFACE':
+			set_surface_mode(mode, level)
+
+		elif obj_type == 'CURVE':
+			set_curve_mode(mode, level)
 		
-		if active_object != None:
-			v,e,f = ctx.tool_settings.mesh_select_mode
-			if active_object.type == 'MESH':
-				if is_primitive:
-					self.set('OBJECT')
-					return{"FINISHED"}
-				if self.level == 1: # Vertex mode
-					if mode == "EDIT_MESH" and v:
-						self.set('OBJECT')
-					else: 
-						self.set('EDIT')
-						self.mesh(ctx,True,False,False)
-				elif self.level == 2: # Edge mode
-					if mode == "EDIT_MESH" and e:
-						self.set('OBJECT')
-					else: 
-						self.set('EDIT')
-						self.mesh(ctx,False,True,False)
-				#elif self.level == 3: # Reserved for Border mode
-				#	# this is reserved for border mode for now just act as edge mode
-				#	if mode == "EDIT_MESH" and e:
-				#		self.set('OBJECT')
-				#	else:
-				#		self.set('EDIT')
-				#		self.mesh(ctx,False,True,False)
-				elif self.level in {3, 4}: # Mesh mode
-					if mode == "EDIT_MESH" and f:
-						self.set('OBJECT')
-					else:
-						self.set('EDIT')
-						self.mesh(ctx,False,False,True)
-				#elif self.level == 5: # Reserved for Element mode
-				#	# this is reserved for Element mode for now act as Face mode
-				#	if mode == "EDIT_MESH" and f:
-				#		self.set('OBJECT')
-				#	else:
-				#		self.set('EDIT')
-				#	self.mesh(ctx,False,False,True)
-				elif self.level == 6:
-					self.set('OBJECT')
-				# this do not have similar in 3D Max
-				elif self.level == 7:
-					if mode == "SCULPT": 
-						self.set('OBJECT')
-					else: 
-						self.set('SCULPT')
-				elif self.level == 8:
-					if mode == "PAINT_VERTEX":
-						self.set('OBJECT')
-					else:
-						self.set('VERTEX_PAINT')
-				elif self.level == 9:
-					if mode == "PAINT_WEIGHT":
-						self.set('OBJECT')
-					else: 
-						self.set('WEIGHT_PAINT')
-				elif self.level == 0:
-					if mode == "PAINT_TEXTURE": 
-						self.set('OBJECT')
-					else: 
-						self.set('TEXTURE_PAINT')
-			elif active_object.type == 'SURFACE':
-				if self.level == 1:
-					if mode == "EDIT_SURFACE": 
-						self.set('OBJECT')
-					else: 
-						self.set('EDIT')
-				elif self.level == 0 or self.level >= 2: 
-					self.set('OBJECT')
+		elif obj_type == 'CURVES':
+			set_curves_mode(mode, level)
 
-			elif active_object.type == 'CURVE':
-				if is_primitive:
-					self.set('OBJECT')
-					return{"FINISHED"}
-				if self.level == 1:
-					if mode == "EDIT_CURVE": 
-						self.set('OBJECT')
-					else: 
-						self.set('EDIT')
-				elif self.level == 0 or self.level >= 2: 
-					self.set('OBJECT')
+		elif obj_type == 'META':
+			set_meta_mode(mode, level)
 
-			elif active_object.type == 'META':
-				if self.level == 1:
-					if mode == "EDIT_METABALL": 
-						self.set('OBJECT')
-					else: 
-						self.set('EDIT')
-				elif self.level == 0 or self.level >= 2: 
-					self.set('OBJECT')
+		elif obj_type == 'LATTICE':
+			set_lattice_mode(mode, level)
 
-			elif active_object.type == 'LATTICE':
-				if self.level == 1:
-					if mode == "EDIT_LATTICE": 
-						self.set('OBJECT')
-					else: 
-						self.set('EDIT')
-				elif self.level == 0 or self.level >= 2: 
-					self.set('OBJECT')
+		elif obj_type == 'ARMATURE':
+			set_armature_mode(mode, level)
+		
+		elif obj_type == 'POINTCLOUD':
+			set_point_cloude_mode(mode, level)
 
-			elif active_object.type == 'ARMATURE':
-				if self.level == 1:
-					if mode == "EDIT_ARMATURE":
-						self.set('OBJECT')
-					else:
-						# this for proxy and librery overide the cant be set in edit mode #
-						# TODO find a way to check is linked or not rather then use try #
-						try:
-							self.set('EDIT')
-						except:
-							pass
-				elif self.level == 2:
-					if mode == "POSE":
-						self.set('OBJECT')
-					else:
-						self.set('POSE')
-				elif self.level == 0 or self.level >= 3:
-					self.set('OBJECT')
+		elif obj_type == 'GPENCIL':
+			set_gpencil_mode(mode, level)
 
-			elif active_object.type == 'GPENCIL':
-				if self.level == 1:
-					if mode == 'GPENCIL_EDIT':
-						self.set('OBJECT')
-					else:
-						self.set('GPENCIL_EDIT')
-				elif self.level == 2:
-					if mode == 'GPENCIL_SCULPT':
-						self.set('OBJECT')
-					else:
-						self.set('GPENCIL_SCULPT')
-				elif self.level == 3:
-					if mode == 'GPENCIL_PAINT':
-						self.set('OBJECT')
-					else:
-						self.set('GPENCIL_PAINT')
-				elif self.level == 4:
-					if mode == 'GPENCIL_WEIGHT':
-						self.set('OBJECT')
-					else:
-						self.set('GPENCIL_WEIGHT')
-				elif self.level > 4:
-					self.set('OBJECT')
-		return{"FINISHED"}
-
+		return{'FINISHED'}
 
 
 def register_subobject_level():
-	bpy.utils.register_class(Object_OT_Subobject_Level)
-
+	register_class(Object_OT_Subobject_Level)
 
 
 def unregister_subobject_level():
-	bpy.utils.unregister_class(Object_OT_Subobject_Level)
+	unregister_class(Object_OT_Subobject_Level)
 
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
 	register_subobject_level()

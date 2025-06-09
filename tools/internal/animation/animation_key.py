@@ -150,76 +150,76 @@ class Freeze_on_Property(PropertyGroup):
 		min=1,
 		default=1,
 		description="Number of frames object has to fixed"
-	) # type: ignore
+	) 
 	
 	next_step: IntProperty(
 		name="Cycle",
 		min=1,
 		default=1,
 		description="Length of walk/run cycle"
-	) # type: ignore
+	) 
 	
 	repeat: IntProperty(
 		name="Repeat",
 		min=1,
 		default=1,
 		description="Repeat same action for next steps"
-	) # type: ignore
+	) 
 	
 	""" Key chanels """
 	key_location: BoolProperty(
 		name="Key Location",
 		default=True,
 		description="Set Key for Location"
-	) # type: ignore
+	) 
 	
 	key_rotation: BoolProperty(
 		name="Key Rotation",
 		default=True,
 		description="Set key for Rotation"
-	) # type: ignore
+	) 
 	
 	key_scale: BoolProperty(
 		name="Key Scale",
 		default=False,
 		description="Set key for Scale"
-	) # type: ignore
+	) 
 	
 	""" Calculator """
-	calculator: BoolProperty(name="Calculator", default=False) # type: ignore
+	calculator: BoolProperty(name="Calculator", default=False) 
 	
 	push: IntProperty(
 		name="Frame that first time foot touch the floor",
 		min=0,
 		default=1,
 		update=update_freeze_on
-	) # type: ignore
+	) 
 	
 	relase: IntProperty(
 		name="Frame that foot untouch floor",
 		min=0, default=1,
 		update=update_freeze_on
-	) # type: ignore
+	) 
 
 	next_push: IntProperty(
 		name="Second time foot touch floor",
 		min=0, default=1,
 		update=update_freeze_on
-	) # type: ignore
+	) 
 	
 	end: IntProperty(
 		name="End of Walk/Run cycle",
 		min=0, default=1,
 		update=update_freeze_on
-	) # type: ignore
+	) 
 
 	""" Simple """
 	more: BoolProperty(
 		name="More Option", default=False,
 		update=update_freeze_on_option
-	) # type: ignore
+	) 
 	
-	panel: BoolProperty(name="On Panel", default=False) # type: ignore
+	panel: BoolProperty(name="On Panel", default=False) 
 
 
 class Anim_OT_Set_Key_Filters(Operator):
@@ -227,19 +227,19 @@ class Anim_OT_Set_Key_Filters(Operator):
 	bl_label = "Set Key Filters"
 	bl_description = "Set Key Filter"
 
-	available: BoolProperty(name="Avalable") # type: ignore
-	location: BoolProperty(name="Location") # type: ignore
-	rotation: BoolProperty(name="Rotation") # type: ignore
-	scale: BoolProperty(name="Scale") # type: ignore
-	visual_location: BoolProperty(name="Visual Location") # type: ignore
-	visual_rotation: BoolProperty(name="Visual Rotation") # type: ignore
-	visual_scale: BoolProperty(name="Viasual Scale") # type: ignore
-	bbone_shape: BoolProperty(name="BBone Shape") # type: ignore
-	whole_character: BoolProperty(name="Whole Character") # type: ignore
+	available: BoolProperty(name="Avalable") 
+	location: BoolProperty(name="Location") 
+	rotation: BoolProperty(name="Rotation") 
+	scale: BoolProperty(name="Scale") 
+	visual_location: BoolProperty(name="Visual Location") 
+	visual_rotation: BoolProperty(name="Visual Rotation") 
+	visual_scale: BoolProperty(name="Viasual Scale") 
+	bbone_shape: BoolProperty(name="BBone Shape") 
+	whole_character: BoolProperty(name="Whole Character") 
 	
 	whole_character_selected: BoolProperty(
 		name="Whole Character (Selected only)"
-	) # type: ignore
+	) 
 
 	def draw(self, _):
 		layout = self.layout
@@ -365,7 +365,7 @@ class Anim_OT_Frame_Set(Operator):
 			('Last', "Last", "")
 		],
 		default='Next'
-	) # type: ignore
+	) 
 	
 	def execute(self, ctx):
 		scene = ctx.scene

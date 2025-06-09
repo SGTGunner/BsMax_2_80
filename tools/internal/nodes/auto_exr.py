@@ -74,7 +74,7 @@ def create_node_file_output(ctx, position):
 	return node
 
 
-def link_render_layers(ctx, sourceNode, targetNode, create):
+def link_render_layers(ctx, sourceNode, targetNode, create, filters):
 	for out in sourceNode.outputs:
 		# skip disabled outputs
 		if (out.enabled == False):
@@ -82,6 +82,17 @@ def link_render_layers(ctx, sourceNode, targetNode, create):
 
 		slot = 0
 		found = False
+
+		# skip if filers has item and not match with filter
+		if filters:
+			allowed = False
+			for filter in filters:
+				if filter in out.name:
+					allowed = True
+					break
+			if not allowed:
+				continue
+
 
 		for src in targetNode.inputs:
 			if (src.identifier == out.identifier):
@@ -111,12 +122,55 @@ def auto_exr_setup(ctx, create):
 	if not outputNode:
 		outputNode = create_node_file_output(ctx, (400, 450))
 	
-	link_render_layers(ctx, layersNode, outputNode, create)
+	link_render_layers(ctx, layersNode, outputNode, create, [])
+
+
+def cryptomatte_to_exr_setup(cls, ctx):
+	layersNode = get_render_layer_node(ctx)
+
+	if not layersNode:
+		return
+	
+	filter = []
+
+	if cls.object:
+		ctx.view_layer.use_pass_cryptomatte_object = True
+		filter.append('CryptoObject')
+	
+	if cls.material:
+		ctx.view_layer.use_pass_cryptomatte_material = True
+		filter.append('CryptoMaterial')
+
+	if cls.asset:
+		ctx.view_layer.use_pass_cryptomatte_asset = True
+		filter.append('CryptoAsset')
+	
+	# igonor if there is not any selected option
+	if not filter:
+		return
+
+	outputNode = get_outpout_node(ctx)
+
+	if not outputNode:
+		outputNode = create_node_file_output(ctx, (400, 450))
+
+	# As I know this is best setting for saving cryptomatt in exr #
+	outputNode.format.file_format = 'OPEN_EXR_MULTILAYER'
+	outputNode.format.color_depth = '16'
+	outputNode.format.exr_codec = 'PIZ'
+	outputNode.format.color_management = 'OVERRIDE'
+	outputNode.format.linear_colorspace_settings.name = 'ACEScg'
+
+	# Remove the defoult image slot
+	outputNode.file_slots.remove(outputNode.inputs['Image'])
+
+	link_render_layers(ctx, layersNode, outputNode, True, filter)
 
 
 class Node_OT_Auto_EXR(Operator):
 	bl_idname = 'node.auto_exr'
 	bl_label = "Auto EXR Connector"
+	bl_description = "Connect Render layer outpout to file out"
 	bl_options = {'REGISTER', 'UNDO'}
 
 	create: BoolProperty(
@@ -129,7 +183,6 @@ class Node_OT_Auto_EXR(Operator):
 		lable = "Force to Create Missing Links" if self.create else "Link Avalible slots only"
 		layout.prop(self, 'create', text=lable)
 		
-
 	def execute(self, ctx):
 		auto_exr_setup(ctx, self.create)
 		return {'FINISHED'}
@@ -138,20 +191,68 @@ class Node_OT_Auto_EXR(Operator):
 		return ctx.window_manager.invoke_props_dialog(self, width=400)
 
 
+class Node_OT_Cryptomatte_to_exr(Operator):
+	bl_idname = 'node.crypto_to_exr'
+	bl_label = "Cryptomatte to EXR"
+	bl_description = "Connect Cryptomatter to fileoutput with best setting"
+	bl_options = {'REGISTER', 'UNDO'}
+
+	object: BoolProperty(
+		name="Object",
+		default=True
+	) # type: ignore
+
+	material: BoolProperty(
+		name="Material",
+		default=True
+	) # type: ignore
+
+	asset: BoolProperty(
+		name="Asset",
+		default=True
+	) # type: ignore
+
+
+	def draw(self, ctx):
+		layout = self.layout
+		layout.prop(self, 'object')
+		layout.prop(self, 'material')
+		layout.prop(self, 'asset')
+
+	def execute(self, ctx):
+		cryptomatte_to_exr_setup(self, ctx)
+		return {'FINISHED'}
+	
+	def invoke(self, ctx, _):
+		return ctx.window_manager.invoke_props_dialog(self, width=400)
+
+
 def composit_tool_menu(self, ctx):
 	self.layout.operator('node.auto_exr')
+	self.layout.operator('node.crypto_to_exr')
+
+
+classes = {
+	Node_OT_Auto_EXR,
+	Node_OT_Cryptomatte_to_exr
+}
 
 
 def register_auto_exr():
-	register_class(Node_OT_Auto_EXR)
+	for cls in classes:
+		register_class(cls)
+
 	bpy.types.BSMAX_MT_compositor_tools.append(composit_tool_menu)
 
 
 def unregister_auto_exr():
 	bpy.types.BSMAX_MT_compositor_tools.remove(composit_tool_menu)
-	unregister_class(Node_OT_Auto_EXR)
+
+	for cls in classes:
+		unregister_class(cls)
 
 
 if __name__ == '__main__':
 	# register_auto_exr()
-	register_class(Node_OT_Auto_EXR)
+	for cls in classes:
+		register_class(cls)

@@ -1269,6 +1269,11 @@ def font(km):
 	km.new(space, 'font.text_paste', 'INSERT', 'PRESS', [], shift=True)
 
 
+def point_cloud(km):
+	space = km.space('Point Cloud', 'EMPTY', 'WINDOW')
+	add_subobject(km, space)
+
+
 def vertex_paint(km):
 	space = km.space('Vertex Paint', 'EMPTY', 'WINDOW')
 	add_switch_view(km, space)
@@ -2220,6 +2225,7 @@ def register_max(preferences):
 			grease_pencil(km_viewport, preferences)
 			pos(km_viewport, preferences)
 			font(km_viewport)
+			point_cloud(km_viewport)
 			outliner(km_viewport)
 			spreadsheet(km_viewport)
 			km_viewport.register()

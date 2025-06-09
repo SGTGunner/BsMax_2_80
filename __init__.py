@@ -19,9 +19,9 @@
 
 bl_info = {
 	'name': "BsMax",
-	'description': "BsMax Toolkit (Blender 3.6LTS ~ 4.4 )",
+	'description': "BsMax Toolkit (Blender 3.6LTS ~ 4.5LTS )",
 	'author': "Nevil Tan (Naser Merati)",
-	'version': (1, 3, 20250429),
+	'version': (1, 3, 20250609),
 	'blender': (3, 6, 0), # Minimum Version
 	'location': "Almost Everywhere in Blender",
 	'doc_url': 'https://github.com/NevilArt/BsMax/wiki',
@@ -246,7 +246,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='SIMPLE',
 		update= lambda self, ctx: update_preferences(self, ctx, 'aplication'),
 		description="select a package"
-	) # type: ignore
+	) 
 	
 	apps = [
 		(
@@ -313,7 +313,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'APLICATION'),
 		description="select a package"
-	) # type: ignore
+	) 
 
 	""" Simple select mode """
 	navigation: EnumProperty(
@@ -322,7 +322,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'NAVIGATION'),
 		description="select overide navigation mode"
-	) # type: ignore
+	) 
 
 	keymaps: EnumProperty(
 		name="Keymap",
@@ -330,7 +330,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'KEYMAPS'),
 		description="Overide Full Keymap"
-	) # type: ignore
+	) 
 
 	floatmenus: EnumProperty(
 		name="Float Menu",
@@ -338,7 +338,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'FLOATMENUS'),
 		description="Float menus type"
-	) # type: ignore
+	) 
 
 
 	side_panel: EnumProperty(
@@ -347,7 +347,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='NONE',
 		update= lambda self, ctx: update_preferences(self, ctx, 'PANEL'),
 		description="panel in right side of target software"
-	) # type: ignore
+	) 
 	
 	
 	""" Custom select mode """
@@ -360,7 +360,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		),
 
 		description="Overide navigation on 3D View"
-	) # type: ignore
+	) 
 
 	navigation_2d: EnumProperty(
 		name="Navigation 2D",
@@ -371,7 +371,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		),
 
 		description="Overide navigation in 2D Views"
-	) # type: ignore
+	) 
 
 	viowport: EnumProperty(
 		name="View 3D",
@@ -379,7 +379,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'VIEWPORT'),
 		description="Overide keymaps in 3D view"
-	) # type: ignore
+	) 
 
 	sculpt: EnumProperty(
 		name="Sculpt / Paint",
@@ -387,7 +387,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'SCULPT'),
 		description="Overide keymaps in sculpt and paint mode"
-	) # type: ignore
+	) 
 
 	uv_editor: EnumProperty(
 		name="UV Editor",
@@ -395,7 +395,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'UV_EDITOR'),
 		description="Overide keymaps in UV editor"
-	) # type: ignore
+	) 
 
 	node_editor: EnumProperty(
 		name="Node Editor",
@@ -403,7 +403,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'NODE_EDITOR'),
 		description="Overide keymaps in Node editors"
-	) # type: ignore
+	) 
 
 	graph_editor: EnumProperty(
 		name="Graph Editor",
@@ -413,7 +413,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 			self, ctx, 'GRAPH_EDITOR'
 		),
 		description="Overide keymaps in Time ediotrs"
-	) # type: ignore
+	) 
 
 	clip_editor: EnumProperty(
 		name="Clip Editor",
@@ -421,7 +421,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 		default='BLENDER',
 		update= lambda self, ctx: update_preferences(self, ctx, 'CLIP_EDITOR'),
 		description="Overide keymaps in Clip editor"
-	) # type: ignore
+	) 
 	
 	video_sequencer: EnumProperty(
 		name="Video Sequencer",
@@ -431,7 +431,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 			self, ctx, 'VIDEO_SEQUENCER'
 		),
 		description="Overide keymaps in Video sequencer"
-	) # type: ignore
+	) 
 
 	text_editor: EnumProperty(
 		name="Text Editor",
@@ -441,7 +441,7 @@ class BsMax_AddonPreferences(AddonPreferences):
 			self, ctx, 'TEXT_EDITOR'
 		),
 		description="Overide keymaps in text editor"
-	) # type: ignore
+	) 
 
 	file_browser: EnumProperty(
 		name="File Browser",
@@ -451,59 +451,59 @@ class BsMax_AddonPreferences(AddonPreferences):
 			self, ctx, 'FILE_BROWSER'
 		),
 		description="Overide keymaps in File Browser"
-	) # type: ignore
+	) 
 
 	""" Global options """
-	options: BoolProperty(default=False) # type: ignore
+	options: BoolProperty(default=False) 
 
 	view_undo: BoolProperty(
 		name="View Undo",
 		default=False,
 		update= lambda self, ctx: update_preferences(self, ctx, 'VIEW_UNDO'),
 		description="undo the only view angle"
-	) # type: ignore
+	) 
 
 	menu_scale: FloatProperty(
 		name="Float Menu Scale", min=1, max=3,
 		description=""
-	) # type: ignore
+	) 
 
 	menu_auto_scale: BoolProperty(
 		name="Auto",
 		default=False,
 		description="Link float menu size to thema scale value"
-	) # type: ignore
+	) 
 
 	blender_transform_type: BoolProperty(
 		name="Blender Transform Type",
 		default=False,
 		update= lambda self, ctx: update_preferences(self, ctx, 'TRANSFORM'),
 		description="Make 'W E R' work as 'G R S', Need to restart to See effect"
-	) # type: ignore
+	) 
 
 	nevil_stuff: BoolProperty(
 		name="Developer Exteras",
 		default=False,
 		description="This tools may not usefull for theres, just keep it off"
-	) # type: ignore
+	) 
 
 	affect_theme: BoolProperty(
 		name="Affect Theme",
 		default=True,
 		description="Let addon change some part of theme"
-	) # type: ignore
+	) 
 
 	experimental: BoolProperty(
 		name="Experimental",
 		default=False,
 		description="Enable unfinished tools too"
-	) # type: ignore
+	) 
 
 	geonode_pirimitve: BoolProperty(
 		name="GeoNode primitive",
 		default=False,
 		description="Convert Primitives to geometry node modfier"
-	) # type: ignore
+	) 
 
 	def draw(self, _):
 		layout = self.layout

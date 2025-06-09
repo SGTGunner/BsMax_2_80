@@ -564,35 +564,35 @@ class SceneSelectionSet(PropertyGroup):
 			('SET', 'Set', 'Set Selection groups'),
 			('EDIT', 'Edit', 'Edit buttons layout')
 		]
-	) # type: ignore
+	) 
 
 	# Shown on select mode
-	autohide: BoolProperty(name='Auto hide Non selected', default=False) # type: ignore
-	unselect: BoolProperty(name='Remove From Selection', default=False) # type: ignore
+	autohide: BoolProperty(name='Auto hide Non selected', default=False) 
+	unselect: BoolProperty(name='Remove From Selection', default=False) 
 
 	# shown on Edit mode
 	buttonName: StringProperty(
 		name="",
 		update=rename_active_button
-	) # type: ignore
+	) 
 
 	tabName: StringProperty(
 		name="",
 		update=scene_selection_set_tab_name_update
-	) # type: ignore
+	) 
 	
 	columns: IntProperty(
 		name='columns', min=1, max=30, default=3,
 		update=scene_selection_set_columns_update
-	) # type: ignore
+	) 
 	
 	rows: IntProperty(
 		name='rows', min=1, max=30, default=10,
 		update=scene_selection_set_rows_update
-	) # type: ignore
+	) 
 
-	activeRow: IntProperty(name="", default=0) # type: ignore
-	activeColamn: IntProperty(name="", default=0) # type: ignore
+	activeRow: IntProperty(name="", default=0) 
+	activeColamn: IntProperty(name="", default=0) 
 
 
 
@@ -602,7 +602,7 @@ class ArmatureSelectionSet(PropertyGroup):
 		name='Tab',
 		items=armature_selection_set_tab_items,
 		update=armature_selection_set_tab_update
-	) # type: ignore
+	) 
 	# main data for save in file
 	tabs = {}
 
@@ -637,7 +637,7 @@ class ARMATURE_OT_SelectionSetTab(Operator):
 			('ADD', 'Add', 'Add as new Tab'),
 			('REMOVE', 'Remove', 'Remove Current Tab')
 		]
-	) # type: ignore
+	) 
 
 	def execute(self, ctx):
 		return tab_operator_execute(self, ctx)
@@ -650,7 +650,7 @@ class ARMATURE_OT_SelectionSetIcon(Operator):
 	bl_description = ""
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	icon: StringProperty("") # type: ignore
+	icon: StringProperty("") 
 
 	def draw(self, ctx):
 		armature_ot_selectionset_icon_draw(self, ctx)
@@ -688,10 +688,10 @@ class ARMATURE_OT_SelectionSet(Operator):
 	bl_description = 'Select Bones by selection set ID'
 	bl_options = {'REGISTER', 'INTERNAL'}
 
-	name: StringProperty(name="Name") # type: ignore
-	id: IntProperty(name='id') # type: ignore
-	column: IntProperty(name='Column') # type: ignore
-	row: IntProperty(name='Row') # type: ignore
+	name: StringProperty(name="Name") 
+	id: IntProperty(name='id') 
+	column: IntProperty(name='Column') 
+	row: IntProperty(name='Row') 
 	
 	ctrl, shift, alt = False, False, False
 

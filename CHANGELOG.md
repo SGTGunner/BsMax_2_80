@@ -1,3 +1,6 @@
+# 1, 3, 20250429
+* Compositor/Add/Tools/Auto EXR Connector Updtated and works better now.
+
 # 0, 1, 3, 20250209
 * Compatibility issue with "Shapekey plus" addon has fixed.
 

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/07
+# 2025/06/09
 
 import bpy
 
@@ -36,37 +36,37 @@ class Primitive_PT_Panel(Panel):
 				return True
 		return False
 
-	def draw(this, ctx):
-		layout = this.layout
-		self = ctx.object.data.primitivedata
-		get_primitive_edit_panel(self, layout)
+	def draw(self, ctx):
+		layout = self.layout
+		cls = ctx.object.data.primitivedata
+		get_primitive_edit_panel(cls, layout)
 		col = layout.column(align=True)
 		col.operator("primitive.cleardata", text="Convert to Ragular Object")
 
 
 class Primitive_OT_Edit(Operator):
-	bl_idname = "primitive.edit"
+	bl_idname = 'primitive.edit'
 	bl_label = "Edit Primitive"
-	bl_options = {"UNDO"}
+	bl_description = "Edit primitive object parameters"
+	bl_options = {'UNDO', 'REGISTER'}
 
 	@classmethod
-	def poll(self,ctx):
-		if ctx.active_object != None:
-			if ctx.active_object.type in ('MESH', 'CURVE'):
-				if ctx.active_object.data.primitivedata != "":
-					return True
+	def poll(self, ctx):
+		if ctx.object:
+			if ctx.object.type in {'MESH', 'CURVE'}:
+				return ctx.active_object.data.primitivedata
 		return False
 
-	def draw(this,ctx):
-		self = ctx.active_object.data.primitivedata
-		get_primitive_edit_panel(self,this.layout)
+	def draw(self, ctx):
+		cls = ctx.active_object.data.primitivedata
+		get_primitive_edit_panel(cls, self.layout)
 
-	def execute(self,ctx):
+	def execute(self, _):
 		return {'FINISHED'}
 
-	def invoke(self,ctx,event):
+	def invoke(self, ctx, _):
 		wm = ctx.window_manager
-		return wm.invoke_props_dialog(self,width=200)
+		return wm.invoke_props_dialog(self, width=200)
 
 
 class BsMax_OT_Set_Object_Mode(Operator):
@@ -75,22 +75,28 @@ class BsMax_OT_Set_Object_Mode(Operator):
 
 	@classmethod
 	def poll(self, ctx):
-		return ctx.active_object != None
+		return ctx.object
 
 	def execute(self, ctx):
 		classname = ""
-		if ctx.active_object.type in ('MESH', 'CURVE'):
-			classname = ctx.active_object.data.primitivedata.classname
+		obj = ctx.object
 
-		if classname != "":
+		if obj.type in ('MESH', 'CURVE'):
+			classname = obj.data.primitivedata.classname
+
+		leagel_types = {
+			'MESH','CURVE','SURFACE','META','FONT',
+			'ARMATURE', 'LATTICE', 'POINTCLOUD'
+		}
+
+		if classname:
 			bpy.ops.primitive.edit('INVOKE_DEFAULT')
+
 		else:
-			if ctx.active_object.type == 'GPENCIL':
+			if obj.type == 'GPENCIL':
 				bpy.ops.gpencil.editmode_toggle()
 
-			elif ctx.active_object.type in {'MESH','CURVE','SURFACE',
-											'META','FONT','ARMATURE',
-											'LATTICE'}:
+			elif obj.type in leagel_types:
 				# igone the edit mode for proxy and libraryoverirde #
 				# TODO need to a method to check linked or not rather than use try #
 				try:
@@ -99,19 +105,19 @@ class BsMax_OT_Set_Object_Mode(Operator):
 					pass
 			# ignor this types {'EMPTY','LIGHT','LIGHT_PROBE','CAMERA','SPEAKER',}
 
-		return {"FINISHED"}
+		return {'FINISHED'}
 
 
-classes = (
+classes = {
 	Primitive_PT_Panel,
 	Primitive_OT_Edit,
 	BsMax_OT_Set_Object_Mode
-)
+}
 
 def register_panel():
-	for c in classes: 
-		register_class(c)
+	for cls in classes: 
+		register_class(cls)
 
 def unregister_panel():
-	for c in classes:
-		unregister_class(c)
+	for cls in classes:
+		unregister_class(cls)

@@ -105,6 +105,9 @@ class View_OT_Blender_Default_Menue_Call(Operator):
 
 		elif mode == 'PARTICLE':
 			mt = 'VIEW3D_MT_particle_context_menu'
+		
+		elif mode == 'EDIT_POINTCLOUD':
+			return{'FINISHED'} 
 
 		bpy.ops.wm.call_menu(name=mt)
 
