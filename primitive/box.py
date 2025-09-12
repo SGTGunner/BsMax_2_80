@@ -16,7 +16,6 @@
 
 import bpy
 
-from bpy.app import version
 from primitive.primitive import Primitive_Geometry_Class, Draw_Primitive
 
 useGeonode = False
@@ -475,7 +474,7 @@ class Create_OT_Box(Draw_Primitive):
 	
 	def finish(self):
 		global useGeonode
-		if version >= (4, 0, 0) and useGeonode:
+		if useGeonode:
 			owner = self.subclass.owner
 			pd = owner.data.primitivedata
 			convert_to_geometry_node_box(

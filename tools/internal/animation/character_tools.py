@@ -12,14 +12,39 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/26
+# 2025/09/07
+
+
+""" This file can be instaled as an stand alone add-on too """
+
+bl_info = {
+	"name": "BsMax-CharacterTools",
+	"description": "Some Simple Character Tools (Blender 4.2LTS ~ 4.5LTS)",
+	"author": "Nevil",
+	"version": (1, 0, 0),
+	"blender": (4, 2, 0),
+	"location": "View3D/ Object/ Animation/ ...",
+	"doc_url": "https://github.com/NevilArt/BsMax/wiki",
+	"tracker_url": "https://github.com/NevilArt/BsMax/issues",
+	"category": "Animation"
+}
 
 import bpy
 
 from bpy.types import Operator
 from bpy.props import StringProperty
 from bpy.utils import register_class, unregister_class
-from bsmax.actions import set_as_active_object
+
+
+def set_as_active_object(ctx, obj):
+	if not obj:
+		return
+
+	for obj in ctx.selected_objects:
+		obj.select_set(False)
+
+	obj.select_set(state=True)
+	ctx.view_layer.objects.active = obj
 
 
 class CharacterSet:
@@ -41,14 +66,36 @@ class CharacterSet:
 character_set = CharacterSet()
 
 
+class Armature_TO_Select_By_Name(Operator):
+	bl_idname = 'anim.select_by_name'
+	bl_label = "Select Armature By Name"
+	bl_options = {'REGISTER', 'UNDO', 'INTERNAL'}
+	
+	name: StringProperty(default="")
+	
+	@classmethod
+	def poll(self, ctx):
+		return ctx.mode == 'OBJECT'
+	
+	def execute(self,ctx):
+		if not self.name:
+			return{'FINISHED'}
+		
+		bpy.ops.object.select_all(action='DESELECT')
+
+		if self.name in bpy.data.objects:
+			set_as_active_object(ctx, bpy.data.objects[self.name])
+
+		return{'FINISHED'}
+
+
 class Armature_TO_Character_Hide(Operator):
-	""" Hide/Unhide Character (for now only Armature) """
 	bl_idname = 'anim.character_hide'
 	bl_label = "Character Hide"
-	bl_description = ""
+	bl_description = "Hide/Unhide Character (for now only Armature)"
 	bl_options={'REGISTER', 'INTERNAL'}
 
-	name: StringProperty(default="") # type: ignore
+	name: StringProperty(default="")
 
 	def execute(self, _):
 		character = character_set.get_character_by_name(self.name)
@@ -62,13 +109,12 @@ class Armature_TO_Character_Hide(Operator):
 
 
 class Armature_TO_Character_Isolate(Operator):
-	""" Isolate only this Character (for now only Armature) """
 	bl_idname = 'anim.character_isolate'
 	bl_label = "Character Isolate"
-	bl_description = ""
+	bl_description = "Isolate only this Character (for now only Armature)"
 	bl_options={'REGISTER', 'INTERNAL'}
 
-	name: StringProperty(default="") # type: ignore
+	name: StringProperty(default="")
 
 	def execute(self, _):
 		character = character_set.get_character_by_name(self.name)
@@ -87,10 +133,9 @@ class Armature_TO_Character_Isolate(Operator):
 
 
 class Armature_TO_Character_Rest(Operator):
-	""" Rest/Pose Switch """
 	bl_idname = 'anim.character_rest'
 	bl_label = "Character Rest/Pose"
-	bl_description = ""
+	bl_description = "Rest/Pose Switch"
 	bl_options={'REGISTER', 'INTERNAL'}
 
 	name: StringProperty(default="") # type: ignore
@@ -106,16 +151,15 @@ class Armature_TO_Character_Rest(Operator):
 
 
 class Anim_TO_Character_Lister(Operator):
-	""" List of Character for quick managment """
 	bl_idname = 'anim.character_lister'
 	bl_label = "Character lister"
-	bl_description = ""
+	bl_description = "List of Character for quick managment"
 	bl_options={'REGISTER'}
 
 	def get_field(self, row, character):
 		name = character.name
 		row.operator(
-			'object.select_by_name', icon='ARMATURE_DATA', text=character.name
+			'anim.select_by_name', icon='ARMATURE_DATA', text=character.name
 		).name = name
 
 		hide_icon = 'HIDE_ON' if character.hide_viewport else 'HIDE_OFF'
@@ -153,10 +197,9 @@ class Anim_TO_Character_Lister(Operator):
 
 
 class Object_TO_Make_Override_Library_plus(Operator):
-	""" Convert Multiple selection to library overide """
 	bl_idname = 'object.make_override_library_multi'
 	bl_label = "Make Library Override (Multi)"
-	bl_description = ""
+	bl_description = "Convert Multiple selection to library overide"
 	bl_options={'REGISTER'}
 
 	@classmethod
@@ -184,7 +227,14 @@ def library_override_menu(self, _):
 	self.layout.operator('object.make_override_library_multi')
 
 
+def character_lister_menu(self, _):
+	layout = self.layout
+	layout.separator()
+	layout.operator('anim.character_lister')
+
+
 classes = {
+	Armature_TO_Select_By_Name,
 	Armature_TO_Character_Hide,
 	Armature_TO_Character_Isolate,
 	Armature_TO_Character_Rest,
@@ -193,18 +243,31 @@ classes = {
 }
 
 
-def register_character_lister():
+def register_character_tools():
 	for cls in classes:
 		register_class(cls)
 
 	bpy.types.VIEW3D_MT_object_relations.prepend(library_override_menu)
-	
+	bpy.types.VIEW3D_MT_object_animation.append(character_lister_menu)
 
-def unregister_character_lister():
+
+def unregister_character_tools():
 	bpy.types.VIEW3D_MT_object_relations.remove(library_override_menu)
+	bpy.types.VIEW3D_MT_object_animation.remove(character_lister_menu)
 
 	for cls in classes:
 		unregister_class(cls)
 
-if __name__ == "__main__":
-	register_character_lister()
+
+# Stand alone mode only
+def register():
+	register_character_tools()
+
+
+def unregister():
+	unregister_character_tools()
+
+
+# Test mode only
+if __name__ == '__main__':
+	register_character_tools()

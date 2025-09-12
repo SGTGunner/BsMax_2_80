@@ -56,7 +56,6 @@ from bpy.props import (
 )
 from bpy.types import Panel, Operator, PropertyGroup
 from bpy.utils import register_class, unregister_class
-from bpy.app import version
 
 last_acceptable_repository_path = ""
 
@@ -437,8 +436,9 @@ def draw_backburner_panel(cls, ctx):
 		icon='RENDER_ANIMATION'
 	).action='SUBMIT'
 
-	save_icon = 'ADD' if version < (4, 0, 1) else 'FILE_TICK'
-	row.operator('render.backburner_action', text="", icon=save_icon).action='SAVE'
+	row.operator(
+		'render.backburner_action', text="", icon='FILE_TICK'
+	).action='SAVE'
 
 	row.operator(
 		'render.backburner_action',

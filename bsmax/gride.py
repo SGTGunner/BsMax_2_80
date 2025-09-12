@@ -19,10 +19,6 @@ import gpu
 
 from gpu_extras.batch import batch_for_shader
 from mathutils import Vector
-from bpy.app import version
-
-if version < (4, 0, 0):
-	from bgl import glEnable, GL_BLEND, glDisable, glLineWidth
 
 from bsmax.bsmatrix import BsMatrix, transform_point_to_matrix
 
@@ -88,59 +84,29 @@ def local_gride_draw_shader(shader, coords, mode, color):
 
 
 def local_gride_draw(self):
-	if version < (4, 0, 0):
-		glEnable(GL_BLEND)
-		glLineWidth(1)
-		shader = gpu.shader.from_builtin('UNIFORM_COLOR')
+	shader = gpu.shader.from_builtin('UNIFORM_COLOR')
 
-		# draw gride
-		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
-		
-		# draw border
-		if self.border:
-			self.draw_shader(
-				shader, self.border,
-				'LINE_STRIP', self.border_color
-			)
+	# draw gride
+	self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
+	
+	# draw border
+	if self.border:
+		self.draw_shader(
+			shader, self.border,
+			'LINE_STRIP', self.border_color
+		)
 
-		# draw closs
-		if self.cross:
-			self.draw_shader(
-				shader, self.cross[0:2],
-				'LINES', self.cross_x_color
-			)
+	# draw closs
+	if self.cross:
+		self.draw_shader(
+			shader, self.cross[0:2],
+			'LINES', self.cross_x_color
+		)
 
-			self.draw_shader(
-				shader, self.cross[2:4],
-				'LINES', self.cross_y_color
-			)
-
-		glDisable(GL_BLEND)
-
-	else:
-		shader = gpu.shader.from_builtin('UNIFORM_COLOR')
-
-		# draw gride
-		self.draw_shader(shader, self.gride, 'LINES', self.gride_color)
-		
-		# draw border
-		if self.border:
-			self.draw_shader(
-				shader, self.border,
-				'LINE_STRIP', self.border_color
-			)
-
-		# draw closs
-		if self.cross:
-			self.draw_shader(
-				shader, self.cross[0:2],
-				'LINES', self.cross_x_color
-			)
-
-			self.draw_shader(
-				shader, self.cross[2:4],
-				'LINES', self.cross_y_color
-			)
+		self.draw_shader(
+			shader, self.cross[2:4],
+			'LINES', self.cross_y_color
+		)
 
 
 class LocalGride:

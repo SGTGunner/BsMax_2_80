@@ -1,3 +1,8 @@
+# 1, 3, 20250609
+* Compositor/Add/Tools/Cryptomatte to EXR operator added.
+* View3D edit mode switch keys (1,2,3,...) improwed and bug fixed (3Ds Max mode only).
+* All Maxscripts reviews and clean up a little bit to ease of use.
+
 # 1, 3, 20250429
 * Compositor/Add/Tools/Auto EXR Connector Updtated and works better now.
 

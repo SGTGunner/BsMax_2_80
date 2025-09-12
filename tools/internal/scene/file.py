@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/02/25
+# 2025/07/16
 
 import bpy
 
@@ -131,17 +131,6 @@ class Scene_OT_Reset(Operator):
 		bpy.ops.wm.read_homefile(app_template="")
 		for obj in ctx.scene.objects:
 			bpy.data.objects.remove(obj, do_unlink=True)
-
-		#TODO check this isuue
-		if version < (4, 1, 0):
-			pass
-			# for area in ctx.screen.areas: 
-			# 	if area.type == 'VIEW_3D':
-			# 		for space in area.spaces: 
-			# 			if space.type == 'VIEW_3D':
-			# 				space.shading.color_type = 'OBJECT'
-		else:
-			pass
 
 		return{'FINISHED'}
 

@@ -523,11 +523,11 @@ class BsMax_MT_Crowds_Tools(Menu):
 
 	def draw(self, ctx):
 		layout=self.layout
-		icon='LIGHTPROBE_GRID' if version < (4, 1, 0) else 'LIGHTPROBE_VOLUME'
+
 		layout.operator(
 			'crowds.clone_refrenses',
 			text="Clone Instanses",
-			icon=icon
+			icon='LIGHTPROBE_VOLUME'
 		)
 
 		layout.operator(

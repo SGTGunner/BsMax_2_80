@@ -21,7 +21,7 @@ from bpy.types import Operator
 from bpy.props import StringProperty
 from bpy.utils import register_class, unregister_class
 
-from bpy.app import version
+# from bpy.app import version
 
 
 def get_root_path():
@@ -33,7 +33,7 @@ def get_root_path():
 	for i in range(len(dirs)-3):
 		root_path += dirs[i] + '\\'
 
-	fileName = "V36" if version < (4, 0, 0) else "V40"
+	fileName = "V40"
 
 	# Make Path
 	return root_path + fileName + '.blend\\NodeTree\\'

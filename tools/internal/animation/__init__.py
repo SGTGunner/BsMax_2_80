@@ -15,7 +15,7 @@
 # 2024/03/27
 
 from .animation_key import register_animation_key, unregister_animation_key
-from .character_lister import register_character_lister, unregister_character_lister
+from .character_tools import register_character_tools, unregister_character_tools
 from .frame_update import register_frame_update, unregister_frame_update
 from .parent import register_parent, unregister_parent
 from .pose import register_pose, unregister_pose
@@ -25,7 +25,7 @@ from .time import register_time, unregister_time
 
 def register_animation(preferences):
 	register_animation_key()
-	register_character_lister()
+	register_character_tools()
 	register_frame_update(preferences)
 	register_parent()
 	register_pose()
@@ -36,7 +36,7 @@ def register_animation(preferences):
 def unregister_animation():
 	unregister_menu()
 	unregister_animation_key()
-	unregister_character_lister()
+	unregister_character_tools()
 	unregister_frame_update()
 	unregister_pose()
 	unregister_parent()

@@ -34,10 +34,10 @@
 """ This file can be instaled as an stand alone add-on too """
 bl_info = {
 	"name": "BsMax-Backburner",
-	"description": "Backburner for Blender 3.6LTS ~ 4.3",
+	"description": "Backburner for Blender 3.6LTS ~ 4.5LTS",
 	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
 	"version": (1, 3, 0),
-	"blender": (3, 6, 0),# ~ 4.3
+	"blender": (3, 6, 0),# ~ 4.5
 	"location": "Properties/ Output/ Backbrner",
 	"wiki_url": "https://github.com/NevilArt/BsMax/wiki",
 	"doc_url": "https://github.com/NevilArt/BsMax/wiki",
@@ -433,8 +433,9 @@ def draw_backburner_panel(cls, ctx):
 		icon='RENDER_ANIMATION'
 	).action='SUBMIT'
 
-	save_icon = 'ADD' if version < (4, 0, 1) else 'FILE_TICK'
-	row.operator('render.backburner_action', text="", icon=save_icon).action='SAVE'
+	row.operator(
+		'render.backburner_action', text="", icon='FILE_TICK'
+	).action='SAVE'
 
 	row.operator(
 		'render.backburner_action',

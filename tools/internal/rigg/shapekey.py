@@ -18,14 +18,13 @@
 bl_info = {
 	"name": "BsMax-Shapekey",
 	"description": "Drive multiple Shapekey (Blender 2.93LTS ~ 4.2LTS)",
-	"author": "Matt Ebb | Blaize | Anthony Hunt | Spirou4D | Nevil",
-	"version": (0, 1, 0, 2),# 2023-06-11
-	"blender": (2, 93, 0),# to 3.6
+	"author": "Nevil",
+	"version": (1, 0, 3),
+	"blender": (4, 2, 0),
 	"location": "Properties/ Data/ Shape Key",
-	"wiki_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
-	"doc_url": "https://github.com/NevilArt/BsMax_2_80/wiki",
-	"tracker_url": "https://github.com/NevilArt/BsMax_2_80/issues",
-	"category": "Render"
+	"doc_url": "https://github.com/NevilArt/BsMax/wiki",
+	"tracker_url": "https://github.com/NevilArt/BsMax/issues",
+	"category": "Animation"
 }
 
 import bpy
@@ -245,7 +244,6 @@ def create_multi_shapekey_driver(ctx):
 			driver.driver.expression = script
 
 
-
 class Mesh_TO_Create_Multi_Target_Shapekeys(Operator):
 	"""Name Sequence Targets like this\n
 	target_10\n
@@ -303,6 +301,7 @@ def unregister_shapekey():
 		unregister_class(cls)
 
 
+""" This functions call only on stand alone version """
 def register():
 	register_shapekey()
 
@@ -310,6 +309,6 @@ def register():
 def unregister():
 	unregister_shapekey()
 
-
+""" This call only on test """
 if __name__ == '__main__':
 	register_shapekey()

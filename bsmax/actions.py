@@ -455,8 +455,9 @@ def clear_relations(objs):
 		obj.matrix_world = matrix_world
 
 
+#TODO need to apply modifier properly work on this
 def convert_to_solid_mesh(objs):
-	"""Convert mesh object(s) to a soled freezed collapsed object
+	"""Convert mesh object(s) to a solid freezed collapsed object
 
 		args:
 			obj: mesh object or List

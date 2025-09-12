@@ -211,7 +211,9 @@ class Object_OT_Create(Operator):
 		('STAR', 'Star', '')
 	]
 
-	type: EnumProperty(name='Object Type', items=prims, default='BOX') # type: ignore
+	type: EnumProperty(
+		name='Object Type', items=prims, default='BOX'
+	)
 
 	@classmethod
 	def poll(self, ctx):
@@ -221,6 +223,7 @@ class Object_OT_Create(Operator):
 		self.layout.prop(self, 'type', text="Type")
 
 	def execute(self, ctx):
+		bpy.ops.object.select_all(action='DESELECT')
 		add_parametric_primitive(self.type, ctx)
 		return {'FINISHED'}
 

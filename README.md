@@ -1,5 +1,5 @@
 
-# BsMax Blender Addon 3.6LTS ~ 4.5LTS
+# BsMax Blender Addon 4.2LTS ~ 4.5LTS
 
 BsMax is package of Modeling, Rig & Animation, Render tools and UI mimic for [Blender 3D](https://www.blender.org/).
 
@@ -30,15 +30,17 @@ If you found this product useful and want to support this project you can Donate
 
 ## Stand Alone Tools
 * [backburner.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/render/backburner.py)
+* [selection_set.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/animation/selection_set.py)
 * [shapekey.py](https://raw.github.com/NevilArt/BsMax/master/tools/internal/rigg/shapekey.py)
 
 ## Older Version
-* [Download Older Version for Blender 2.80 ~ 3.5](https://github.com/NevilArt/BsMax_2_80)
+* [Download Older Version for Blender 2.80 ~ 4.1](https://github.com/NevilArt/BsMax_2_80)
 
 ## Recent Updates and Changes
-* Compositor/Add/Tools/Cryptomatte to EXR operator added.
-* View3D edit mode switch keys (1,2,3,...) improwed and bug fixed (3Ds Max mode only).
-* All Maxscripts reviews and clean up a little bit to ease of use.
+* Stuff for older than Blender 4.2 removed.
+* 3DsMax Quadmenu Clone tool bug fixed.
+* Add and Draw Primitive issue fixed.
+* Character Set can be instal stand alone too.
 * [Change log ...](https://github.com/NevilArt/BsMax/blob/master/CHANGELOG.md)
 
 ## Special Thanks

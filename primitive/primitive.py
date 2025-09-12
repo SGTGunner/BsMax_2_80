@@ -12,18 +12,16 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not,see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/05/19
+# 2025/08/30
 
 import bpy
 
 from bmesh import new as bmesh_new
-from bgl import glEnable, glDisable, GL_BLEND
 from random import random
 from mathutils import Vector
 from gpu import shader as gshader
 from gpu_extras.batch import batch_for_shader
 from bpy.types import Operator
-from bpy.app import version
 
 from bsmax.actions import link_to_scene, set_as_active_object
 from .gride import Gride, Dimension, Click_Point
@@ -31,13 +29,8 @@ from bsmax.gride import LocalGride
 
 
 def set_smooth_by_angel(cls):
-	if version < (4, 1, 0):
-		cls.data.use_auto_smooth = True
-		cls.data.auto_smooth_angle = 0.523599
-
-	elif version >= (4, 1, 0):
-		#TODO find a method that work on non selected mode too
-		bpy.ops.object.shade_smooth_by_angle()
+	#TODO find a method that work on non selected mode too
+	bpy.ops.object.shade_smooth_by_angle()
 
 
 def set_shading_mode(cls):
@@ -59,7 +52,7 @@ def float_vector_to_color(floatVector):
 
 
 def primitive_geometry_class_create_mesh(cls, ctx, meshdata, classname):
-	verts,edges,faces, = meshdata
+	verts, edges, faces, = meshdata
 	newmesh = bpy.data.meshes.new(classname)
 	newmesh.from_pydata(verts, edges, faces)
 	newmesh.update(calc_edges=True)
@@ -160,23 +153,12 @@ def ClearPrimitiveData(obj):
 
 
 def draw_cursur_override(cls):
-	if version < (4, 0, 0):
-		glEnable(GL_BLEND)
-		shader = gshader.from_builtin('UNIFORM_COLOR')
-		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
-		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
-		shader.bind()
-		shader.uniform_float("color",(0.8, 0.8, 0.8, 0.6))
-		batch.draw(shader)
-		glDisable(GL_BLEND)
-
-	else:
-		shader = gshader.from_builtin('UNIFORM_COLOR')
-		v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
-		batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
-		shader.bind()
-		shader.uniform_float("color", (0.8, 0.8, 0.8, 0.6))
-		batch.draw(shader)
+	shader = gshader.from_builtin('UNIFORM_COLOR')
+	v, f = GetCursurMesh(20, cls.mpos.x, cls.mpos.y)
+	batch = batch_for_shader(shader, 'TRIS', {"pos":v}, indices=f)
+	shader.bind()
+	shader.uniform_float("color", (0.8, 0.8, 0.8, 0.6))
+	batch.draw(shader)
 
 
 def add_curcur_override(cls):
@@ -513,6 +495,7 @@ class Draw_Primitive(Operator):
 		""" Detect First click """
 		if event.type == 'LEFTMOUSE':
 			if self.step == 0:
+				bpy.ops.object.select_all(action='DESELECT')
 				draw_primitive_first_click(self, ctx, x, y)
 				fix_type_visablity(self.subclass, ctx)
 				
@@ -533,8 +516,10 @@ class Draw_Primitive(Operator):
 				
 				if self.use_gride:# high priority
 					draw_primitive_use_gride(self, ctx, x, y)
+
 				elif self.use_surface:# seconf priority
 					draw_primitive_use_surface(self, ctx, x, y)
+
 				else:# the only avalible option
 					draw_primitive_use_gride(self, ctx, x, y)
 				

@@ -12,7 +12,7 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-
+# 2025/07/22
 
 c0000="object.select_linked(type='OBDATA')"
 c0001="object.convert_to(target='MESH')"
@@ -25,7 +25,7 @@ c0007="wm.tool_set_by_id(name='builtin.scale')"
 c0008="object.tti_call(switch='scale')"
 c0009="wm.tool_set_by_id(name='builtin.select_box')"
 c0010="object.select_similar()"
-c0011="object.clone('FAULT')"
+c0011="object.clone('INVOKE_DEFAULT')"
 c0012="object.hide(mode='selection')"
 c0013="object.hide(mode='unselected')"
 c0014="object.hide(mode='clear', collection=True)"

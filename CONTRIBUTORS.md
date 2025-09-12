@@ -7,12 +7,14 @@
 * jonas grigonis
 * nildo essa
 * gary jay smith
+* Sviatoslav Voskreenskyi
 
 * thorn@neverwake.com
 * fahranyounas@googlemail.com
 
 * Pamela Okoro
 * Libor D.
+* david goldstein
 * bikekefeli@gmail.com
 * d_phantom70@hotmail.com
 * kuroiluna@hotmail.com

@@ -17,7 +17,6 @@ import bpy
 
 from bpy.types import Operator
 from bpy.utils import register_class, unregister_class
-from bpy.app import version
 
 
 def get_npolys(mesh):
@@ -47,11 +46,6 @@ def get_npolys_border_edges(mesh, npolys):
 
 
 def set_edge_crease(mesh, edges, crease):
-	if version < (4, 0, 0):
-		for edge in edges:
-			edge.crease = crease
-		return
-	
 	mesh.edge_creases_ensure()
 	creases_data = mesh.edge_creases.data
 	for edge in edges:

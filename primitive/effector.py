@@ -16,7 +16,6 @@
 
 import bpy
 from bpy.props import EnumProperty
-from bpy.app import version
 
 from primitive.primitive import Draw_Primitive, Primitive_Public_Class
 
@@ -57,7 +56,7 @@ class Create_OT_Effector(Draw_Primitive):
 	def create(self, ctx):
 		# SMOKE replaced with FLUID in Blende 4.0
 		effector_type = self.effector_type
-		if version >= (4, 0, 0) and effector_type == 'SMOKE':
+		if effector_type == 'SMOKE':
 			effector_type = 'FLUID'
 
 		bpy.ops.object.effector_add(

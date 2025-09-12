@@ -187,7 +187,7 @@ def set_armature_mode(mode, level):
 
 
 def set_point_cloude_mode(mode, level):
-	print(level, mode)
+	# print(level, mode)
 	if level == 1:
 		if mode == 'EDIT_POINTCLOUD':
 			set_mode('OBJECT')

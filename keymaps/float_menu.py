@@ -96,7 +96,7 @@ def add_float_menu(km, preferences):
 			spaces.append(km.space('Armature', 'EMPTY', 'WINDOW'))
 			spaces.append(km.space('Grease Pencil', 'EMPTY', 'WINDOW'))
 			spaces.append(km.space('Pose', 'EMPTY', 'WINDOW'))
-			
+
 			for space in spaces :
 				add_3dsmax_quad_menu(floatMenuKaymaps, space, preferences)
 

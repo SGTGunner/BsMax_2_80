@@ -12,6 +12,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2025/09/11
+
+""" This file can be instaled as an stand alone add-on too """
+
+bl_info = {
+	"name": "BsMax-CharacterSet",
+	"description": "Character Selection Set (Blender 4.2LTS ~ 4.5LTS)",
+	"author": "Nevil Tan",
+	"version": (1, 0, 0),
+	"blender": (4, 2, 0),
+	"location": "Pose mode: N panel /Tool /Selection",
+	"doc_url": "https://github.com/NevilArt/BsMax/wiki",
+	"tracker_url": "https://github.com/NevilArt/BsMax/issues",
+	"category": "Animation"
+}
+
+
 import bpy
 
 from bpy.types import Operator, Panel, PropertyGroup
@@ -484,6 +501,15 @@ def unregister_selection_set():
 	del bpy.types.Scene.selection_set
 	del bpy.types.Armature.selection_set
 	del bpy.types.PoseBone.selection_groups
+
+
+# Stand alone mode only
+def register():
+	register_selection_set()
+
+
+def unregister():
+	unregister_selection_set()
 
 
 if __name__ == '__main__':

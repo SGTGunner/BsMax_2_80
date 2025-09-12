@@ -12,10 +12,23 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
+# 2025/09/11
+
+""" This file can be instaled as an stand alone add-on too """
+
+bl_info = {
+	"name": "BsMax-CharacterSet",
+	"description": "Character Selection Set (Blender 4.2LTS ~ 4.5LTS)",
+	"author": "Nevil Tan",
+	"version": (2, 0, 0),
+	"blender": (4, 2, 0),
+	"location": "Pose mode: N panel /Tool /Selection",
+	"doc_url": "https://github.com/NevilArt/BsMax/wiki",
+	"tracker_url": "https://github.com/NevilArt/BsMax/issues",
+	"category": "Animation"
+}
 
 import bpy
-
-from math import sqrt
 
 from bpy.types import Operator, Panel, PropertyGroup
 from bpy.props import (
@@ -25,7 +38,6 @@ from bpy.props import (
 
 
 buttonSheet = []
-
 
 
 def get_command_by_index(index):
@@ -48,7 +60,6 @@ def get_command_by_index(index):
 	if index < len(commands):
 		return commands[index]
 	return None
-
 
 
 def button_get_unique_id(self):
@@ -78,13 +89,11 @@ def get_button_layout(tab, button, layout):
 	# buttonOperator.command = button['command']
 
 
-
 def armature_selection_set_get_unique_id(self):
 	ids = [self.tabs[key]['id'] for key in self.tabs.keys()]
 	if ids:
 		return max(ids) + 1
 	return 0
-
 
 
 def armature_selection_set_new_tab(self, ctx):
@@ -103,7 +112,6 @@ def armature_selection_set_new_tab(self, ctx):
 	return newTab
 
 
-
 def armature_selection_set_get_active_tab(self, ctx):
 	if self.tab in self.tabs:
 		return self.tabs[self.tab]
@@ -116,13 +124,11 @@ def armature_selection_set_get_active_tab(self, ctx):
 	return self.new_tab(ctx)
 
 
-
 def scene_selection_set_tab_name_update(self, ctx):
 	objselectionSet = ctx.object.data.selection_set
 	activeTab = objselectionSet.active_tab(ctx)
 	activeTab = objselectionSet.tabs[objselectionSet.tab]
 	activeTab['name'] = self.tabName
-
 
 
 def scene_selection_set_columns_update(self, ctx):
@@ -137,31 +143,26 @@ def scene_selection_set_rows_update(self, ctx):
 	activeTab['rows'] = self.rows
 
 
-
 def tab_operator_execute(self, ctx):
 	objselectionSet = ctx.object.data.selection_set
 
-	if self.action == "ADD":
+	if self.action == 'ADD':
 		objselectionSet.new_tab(ctx)
 		return{'FINISHED'}
 
-	elif self.action == "REMOVE":
+	elif self.action == 'REMOVE':
 		objselectionSet.remove_tab(ctx)
 		return{'FINISHED'}
 
 	return{'FINISHED'}
 
 
-
 def selection_set_operator_bone_select(self, ctx):
 	print(">> Do selection or command")
 
 
-
 def selection_set_operator_bone_autohide(ctx, hide):
 	print(">> Utohide")
-
-
 
 
 def selection_set_operator_set(self, ctx):
@@ -178,7 +179,6 @@ def selection_set_operator_set(self, ctx):
 			# bone.selection_groups
 		else:
 			pass
-
 
 
 def selection_set_operator_execute(self, ctx):
@@ -206,7 +206,6 @@ def selection_set_operator_execute(self, ctx):
 	return{'FINISHED'}
 
 
-
 def armature_selection_set_tab_items(self, ctx):
 	if ctx.object.type != "ARMATURE":
 		return []
@@ -220,7 +219,6 @@ def armature_selection_set_tab_items(self, ctx):
 	return items
 
 
-
 def armature_selection_set_tab_update(self, ctx):
 	sceneSelectionSet = ctx.scene.selection_set
 	tab = self.active_tab(ctx)
@@ -230,7 +228,6 @@ def armature_selection_set_tab_update(self, ctx):
 		sceneSelectionSet.rows = tab['rows']
 		sceneSelectionSet.activeRow = -1
 		sceneSelectionSet.activeColamn = -1
-
 
 
 def armature_selection_set_get_active_button(self, ctx):
@@ -254,7 +251,6 @@ def armature_selection_set_get_active_button(self, ctx):
 	return None
 
 
-
 def get_unique_button_id(tab):
 	ids = []
 	for key in tab['buttons'].keys():
@@ -263,7 +259,6 @@ def get_unique_button_id(tab):
 	if ids:
 		return max(ids)+1
 	return 0
-
 
 
 def armature_selection_set_new_button(self, ctx):
@@ -281,7 +276,6 @@ def armature_selection_set_new_button(self, ctx):
 	newButton['row'] = activeRow
 	newButton['icon'] = None
 	newButton['command'] = ''
-
 
 
 def armature_selection_set_get_button_sheet(self, ctx):
@@ -316,7 +310,6 @@ def armature_selection_set_get_button_sheet(self, ctx):
 	return buttonSheet
 
 
-
 def rename_active_button(self, ctx):
 	objSelectionSet = ctx.object.data.selection_set
 	sceneSelectionSet = ctx.scene.selection_set
@@ -330,7 +323,6 @@ def rename_active_button(self, ctx):
 	
 	button = tab['buttons'][dicName]
 	button['name'] = sceneSelectionSet.buttonName
-
 
 
 globalIconSheet = []
@@ -348,7 +340,7 @@ def armature_ot_selectionset_get_icons():
 	if globalIconSheet:
 		return globalIconSheet
 	
-	prop = bpy.types.UILayout.bl_rna.functions["prop"]
+	prop = bpy.types.UILayout.bl_rna.functions['prop']
 	iconKeys = prop.parameters['icon'].enum_items.keys()
 
 	globalIconSheet.clear()
@@ -360,7 +352,6 @@ def armature_ot_selectionset_get_icons():
 		lastRow.append(key)
 
 	return globalIconSheet
-
 
 
 activeArmatureName = ""
@@ -400,10 +391,8 @@ def armature_ot_selectionset_icon_draw(self, ctx):
 			).icon=icon
 
 
-
 def armature_ot_selectionset_command_draw(self, ctx):
 	pass
-
 
 
 def armature_ot_selectionset_icon_execute(self, ctx):
@@ -414,14 +403,12 @@ def armature_ot_selectionset_icon_execute(self, ctx):
 	return {'FINISHED'}
 
 
-
 def armature_ot_selectionset_invoke(self, ctx, event):
 	""" Read ctrl, shift alt state """
 	self.ctrl = event.ctrl
 	self.shift = event.shift
 	self.alt = event.alt
 	return self.execute(ctx)
-
 
 
 def armature_op_selectionset_draw(self, ctx):
@@ -526,7 +513,6 @@ def armature_op_selectionset_draw(self, ctx):
 					operator.column = columnIndex
 
 
-
 class PoseBoneSelectionSet(PropertyGroup):
 	tabs = {}
 
@@ -552,23 +538,22 @@ class PoseBoneSelectionSet(PropertyGroup):
 				self.tabs[tabId].remove(buttonId)
 
 
-
 # selection set curent sata in scene and no have saving data
 class SceneSelectionSet(PropertyGroup):
 	# Evru time shown
 	mode: EnumProperty(
-		name='Mode',
+		name="Mode",
 		default='SELECT',
 		items =[
-			('SELECT', 'Select', 'Select group of bones'),
-			('SET', 'Set', 'Set Selection groups'),
-			('EDIT', 'Edit', 'Edit buttons layout')
+			('SELECT', "Select", "Select group of bones"),
+			('SET', "Set", "Set Selection groups"),
+			('EDIT', "Edit", "Edit buttons layout")
 		]
 	) 
 
 	# Shown on select mode
-	autohide: BoolProperty(name='Auto hide Non selected', default=False) 
-	unselect: BoolProperty(name='Remove From Selection', default=False) 
+	autohide: BoolProperty(name="Auto hide Non selected", default=False) 
+	unselect: BoolProperty(name="Remove From Selection", default=False) 
 
 	# shown on Edit mode
 	buttonName: StringProperty(
@@ -582,12 +567,12 @@ class SceneSelectionSet(PropertyGroup):
 	) 
 	
 	columns: IntProperty(
-		name='columns', min=1, max=30, default=3,
+		name="Columns", min=1, max=30, default=3,
 		update=scene_selection_set_columns_update
 	) 
 	
 	rows: IntProperty(
-		name='rows', min=1, max=30, default=10,
+		name="Rows", min=1, max=30, default=10,
 		update=scene_selection_set_rows_update
 	) 
 
@@ -595,11 +580,10 @@ class SceneSelectionSet(PropertyGroup):
 	activeColamn: IntProperty(name="", default=0) 
 
 
-
 class ArmatureSelectionSet(PropertyGroup):
 	# current tab data for UI draw
 	tab: EnumProperty(
-		name='Tab',
+		name="Tab",
 		items=armature_selection_set_tab_items,
 		update=armature_selection_set_tab_update
 	) 
@@ -625,17 +609,17 @@ class ArmatureSelectionSet(PropertyGroup):
 		return armature_selection_set_get_button_sheet(self, ctx)
 
 
-
 class ARMATURE_OT_SelectionSetTab(Operator):
 	bl_idname = 'pose.selection_set_tab'
-	bl_label = 'Selection set Tab'
-	bl_description = ''
+	bl_label = "Selection set Tab"
+	bl_description = "Slection set Tap"
 	bl_options = {'REGISTER', 'INTERNAL'}
+
 	action: EnumProperty(
-		name='Action',
+		name="Action",
 		items=[
-			('ADD', 'Add', 'Add as new Tab'),
-			('REMOVE', 'Remove', 'Remove Current Tab')
+			('ADD', "Add", "Add as new Tab"),
+			('REMOVE', "Remove", "Remove Current Tab")
 		]
 	) 
 
@@ -643,11 +627,10 @@ class ARMATURE_OT_SelectionSetTab(Operator):
 		return tab_operator_execute(self, ctx)
 
 
-
 class ARMATURE_OT_SelectionSetIcon(Operator):
 	bl_idname = 'pose.selection_set_icon'
-	bl_label = 'Selection Set Icon Picker'
-	bl_description = ""
+	bl_label = "Selection Set Icon Picker"
+	bl_description = "Selection Set Icon Picker"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	icon: StringProperty("") 
@@ -664,11 +647,10 @@ class ARMATURE_OT_SelectionSetIcon(Operator):
 		return ctx.window_manager.invoke_props_dialog(self, width=800)
 
 
-
 class ARMATURE_OT_SelectionSetCommand(Operator):
 	bl_idname = 'pose.selection_set_command'
-	bl_label = 'Selection Set Command'
-	bl_description = ""
+	bl_label = "Selection Set Command"
+	bl_description = "Selection Set Command"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	def draw(self, ctx):
@@ -681,17 +663,16 @@ class ARMATURE_OT_SelectionSetCommand(Operator):
 		return ctx.window_manager.invoke_props_dialog(self, width=200)
 
 
-
 class ARMATURE_OT_SelectionSet(Operator):
 	bl_idname = 'pose.selection_set'
-	bl_label = 'Selection set'
-	bl_description = 'Select Bones by selection set ID'
+	bl_label = "Selection set"
+	bl_description = "Select Bones by selection set ID"
 	bl_options = {'REGISTER', 'INTERNAL'}
 
 	name: StringProperty(name="Name") 
-	id: IntProperty(name='id') 
-	column: IntProperty(name='Column') 
-	row: IntProperty(name='Row') 
+	id: IntProperty(name="id") 
+	column: IntProperty(name="Column") 
+	row: IntProperty(name="Row") 
 	
 	ctrl, shift, alt = False, False, False
 
@@ -702,11 +683,10 @@ class ARMATURE_OT_SelectionSet(Operator):
 		return armature_ot_selectionset_invoke(self, ctx, event)
 
 
-
 class Armature_OP_SelectionSet(Panel):
 	bl_space_type = 'VIEW_3D'
 	bl_region_type = 'UI'
-	bl_label = 'Selection (Pose Bone)'
+	bl_label = "Selection (Pose Bone)"
 	bl_idname = 'VIEW3D_PT_selection_set'
 	bl_category = 'Tool'
 
@@ -718,8 +698,7 @@ class Armature_OP_SelectionSet(Panel):
 		armature_op_selectionset_draw(self, ctx)
 
 
-
-classes = (
+classes = {
 	SceneSelectionSet,
 	PoseBoneSelectionSet,
 	ArmatureSelectionSet,
@@ -728,13 +707,12 @@ classes = (
 	ARMATURE_OT_SelectionSetIcon,
 	ARMATURE_OT_SelectionSetCommand,
 	ARMATURE_OT_SelectionSetTab,
-)
-
+}
 
 
 def register_selection_set():
-	for c in classes:
-		bpy.utils.register_class(c)
+	for cls in classes:
+		bpy.utils.register_class(cls)
 	
 	types = bpy.types
 	types.Scene.selection_set = PointerProperty(type=SceneSelectionSet)
@@ -742,10 +720,9 @@ def register_selection_set():
 	types.PoseBone.selection_groups = PointerProperty(type=PoseBoneSelectionSet)
 
 
-
 def unregister_selection_set():
-	for c in classes:
-		bpy.utils.unregister_class(c)
+	for cls in classes:
+		bpy.utils.unregister_class(cls)
 
 	types = bpy.types
 	del types.Scene.selection_set
@@ -753,6 +730,15 @@ def unregister_selection_set():
 	del types.PoseBone.selection_groups
 
 
+# Stand alone mode only
+def register():
+	register_selection_set()
 
-if __name__ == "__main__":
+
+def unregister():
+	unregister_selection_set()
+
+
+# run on test mode only
+if __name__ == '__main__':
 	register_selection_set()

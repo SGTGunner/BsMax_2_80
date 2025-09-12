@@ -12,16 +12,13 @@
 #	You should have received a copy of the GNU General Public License
 #	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ############################################################################
-# 2024/12/26
+# 2025/07/16
 
 import bpy
 import os
-import subprocess
-import platform
 
 from bpy.types import Panel, Operator, PropertyGroup, UIList
 from bpy.utils import register_class, unregister_class
-from bpy.app import version
 from bpy.props import (
 	StringProperty, EnumProperty, BoolProperty,
 	CollectionProperty, IntProperty
@@ -101,11 +98,7 @@ def get_manual_part_of_dict(ctx, engin_name):
 			"simplify_gpencil_onplay",
 			"use_freestyle",
 			"use_persistent_data",
-			"use_motion_blur"
-		]
-
-		if version >= (4, 2, 0):
-			attributes += [
+			"use_motion_blur",
 			"use_simplify_normals"
 		]
 
